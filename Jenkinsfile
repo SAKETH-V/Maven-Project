@@ -1,12 +1,8 @@
-pipeline {
+   pipeline {
     agent any
 
     tools {
         maven 'Maven'
-    }
-
-    environment {
-        APP_NAME = 'student-app'
     }
 
     stages {
@@ -32,18 +28,31 @@ pipeline {
         stage('Package') {
             steps {
                 sh 'mvn package -DskipTests'
-                echo 'JAR file created in target/ folder'
+                echo 'JAR created in target/ folder'
+            }
+        }
+
+        stage('Docker Build') {
+            steps {
+                sh 'docker build -t maven-project .'
+            }
+        }
+
+        stage('Docker Run') {
+            steps {
+                sh 'docker stop maven-project-container || true'
+                sh 'docker rm maven-project-container || true'
+                sh 'docker run -d -p 9090:8080 --name maven-project-container maven-project'
             }
         }
     }
 
     post {
         success {
-            echo '✅ Pipeline completed successfully!'
+            echo '✅ Build & Deployment Successful! App running at http://localhost:9090'
         }
         failure {
-            echo '❌ Pipeline failed. Check Console Output.'
+            echo '❌ Build Failed. Check Console Output.'
         }
     }
 }
-
