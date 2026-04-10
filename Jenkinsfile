@@ -30,9 +30,9 @@ pipeline {
             steps {
                 sh '''
                     mvn test 2>&1 | tee test-log.txt
-                    if grep -q "FAILED\|ERROR" test-log.txt; then
+                    if grep -qE "FAILED|ERROR" test-log.txt; then
                         echo "TEST_STATUS=FAILED" >> status.txt
-                        grep "FAILED\|ERROR" test-log.txt >> status.txt
+                        grep -E "FAILED|ERROR" test-log.txt >> status.txt
                     else
                         echo "TEST_STATUS=PASSED" >> status.txt
                     fi
