@@ -13,7 +13,7 @@ public class App {
     }
 
     public static void main(String[] args) throws IOException {
-        int port = 9090;
+        int port = 8080;
         HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
 
         server.createContext("/", new HttpHandler() {
